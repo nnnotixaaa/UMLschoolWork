@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>document</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'default',
+      securityLevel: 'loose'
+    });
+    window.addEventListener('load', function() {
+      var converted = new Set();
+
+      document.querySelectorAll('pre').forEach(function(pre) {
+        var code = pre.querySelector('code');
+        var preHasMermaid = pre.className && pre.className.indexOf('mermaid') !== -1;
+        var codeHasMermaid =
+          code &&
+          (code.className || '').match(/(?:^|\s)(?:mermaid|language-mermaid)(?:\s|$)/);
+
+        if (preHasMermaid || codeHasMermaid) {
+          var div = document.createElement('div');
+          div.className = 'mermaid';
+          div.textContent = code ? code.textContent : pre.textContent;
+          if (pre.parentNode) {
+            if (code) {
+              converted.add(code);
+            }
+            pre.parentNode.replaceChild(div, pre);
+          }
+        }
+      });
+
+      // Handle rare cases where mermaid markup exists without a <pre> wrapper
+      document.querySelectorAll('code').forEach(function(code) {
+        var hasMermaid = (code.className || '').indexOf('mermaid') !== -1 || (code.className || '').indexOf('language-mermaid') !== -1;
+        if (!hasMermaid || converted.has(code)) {
+          return;
+        }
+        var wrapper = document.createElement('div');
+        wrapper.className = 'mermaid';
+        wrapper.textContent = code.textContent;
+        if (code.parentNode) {
+          code.parentNode.replaceChild(wrapper, code);
+          converted.add(wrapper);
+        }
+      });
+
+      setTimeout(function() {
+        mermaid.init(undefined, document.querySelectorAll('.mermaid'));
+      }, 100);
+    });
+  </script>
+
+  <style>
+  body {
+      font-family: 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', sans-serif;
+      line-height: 1.5;
+      color: #333;
+      background-color: #fafafa;
+      margin: 0 !important;
+      padding: 20px !important;
+      font-size: 14px;
+  }
+
+  table {
+      border-collapse: collapse;
+      min-width: 60%;
+      max-width: 100%;
+      margin: 20px 0;
+      background: white;
+      border-radius: 6px;
+      overflow: hidden;
+      box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+  }
+
+  table tr th {
+      background-color: #143452;
+      color: white;
+      padding: 12px 15px;
+      text-align: left;
+      font-weight: 500;
+  }
+
+  .table-http th,
+  .table-http td,
+  table th,
+  table td {
+      word-break: break-word;
+      overflow-wrap: anywhere;
+      white-space: normal;
+  }
+
+  .tr-break {
+      background-color: #2d79b717 !important;
+  }
+
+  .tr-break td {
+      padding: 8px 12px;
+      font-size: 12px;
+      font-weight: bold;
+  }
+
+  table tr td {
+      padding: 12px 15px;
+      border-bottom: 1px solid #ecf0f1;
+  }
+
+  table tr:last-child td {
+      border-bottom: none;
+  }
+
+  table tr:nth-child(even) {
+      background-color: #f8f9fa;
+  }
+
+  .highlight {
+      background-color: #fff3cd !important;
+  }
+
+  a {
+      font-size: 14px;
+  }
+
+  code {
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: 'Monaco', 'Consolas', monospace;
+      background: #fff8e4;
+      color: #c99a0d;
+      font-size: 13px;
+  }
+
+  pre code {
+      background-color: transparent;
+  }
+
+  pre {
+      background-color: #000;
+      color: #f8f8f2;
+      padding: 20px;
+      border-radius: 6px;
+      border-left: 4px solid #3498db;
+      overflow-x: auto;
+  }
+
+  pre code.language-php,
+  pre code.language-sql,
+  pre code.language-javascript,
+  pre code.language-bash,
+  pre code.language-shell {
+    background-color: #282c34 !important;
+    color: #abb2bf;
+  }
+
+  /* Syntax Highlighting */
+  code span.kw { color: #c678dd; font-weight: bold; } /* Keyword */
+  code span.dt { color: #e5c07b; } /* Datatype */
+  code span.dv { color: #d19a66; } /* Decimal Value */
+  code span.bn { color: #d19a66; } /* Base N */
+  code span.fl { color: #d19a66; } /* Float */
+  code span.ch { color: #98c379; } /* Char */
+  code span.st { color: #98c379; } /* String */
+  code span.co { color: #5c6370; font-style: italic; } /* Comment */
+  code span.ot { color: #e06c75; } /* Other */
+  code span.al { color: #e06c75; font-weight: bold; } /* Alert */
+  code span.fu { color: #61afef; } /* Function */
+  code span.er { color: #e06c75; font-weight: bold; } /* Error */
+  code span.wa { color: #e06c75; font-style: italic; } /* Warning */
+  code span.cn { color: #d19a66; } /* Constant */
+  code span.sc { color: #e5c07b; } /* Special Char */
+  code span.vs { color: #98c379; } /* Verbatim String */
+  code span.ss { color: #98c379; } /* Special String */
+  code span.im { color: #c678dd; } /* Import */
+  code span.va { color: #e06c75; } /* Variable */
+  code span.cf { color: #c678dd; } /* Control Flow */
+  code span.op { color: #56b6c2; } /* Operator */
+  code span.bu { color: #e5c07b; } /* BuiltIn */
+  code span.ex { color: #d19a66; } /* Extension */
+  code span.pp { color: #e5c07b; } /* Preprocessor */
+  code span.at { color: #d19a66; } /* Attribute */
+  code span.do { color: #5c6370; font-style: italic; } /* Documentation */
+  code span.an { color: #5c6370; font-style: italic; } /* Annotation */
+  code span.cv { color: #5c6370; font-style: italic; } /* Comment Var */
+  code span.in { color: #5c6370; font-style: italic; } /* Information */
+
+  ul, ol {
+      margin: 15px 0;
+      padding-left: 30px;
+  }
+
+  li {
+      margin-bottom: 8px;
+  }
+
+  blockquote {
+      background-color: #fff3cd;
+      border-left: 4px solid #ffc107;
+      padding: 15px 20px;
+      margin: 20px 0;
+      border-radius: 4px;
+      color: #856404;
+  }
+
+  pre code.language-json {
+    background-color: #0d1117 !important;
+    color: #58a6ff !important;
+    display: block;
+    font-size: 14px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    margin: -15px;
+  }
+
+  .table-http code {
+      font-size: 12px;
+  }
+
+  .table-http th:nth-child(1),.table-http td:nth-child(1) { width: 8%; }  /* HTTP Method */
+  .table-http th:nth-child(2),.table-http td:nth-child(2) { width: 15%; } /* URL */
+  .table-http th:nth-child(3),.table-http td:nth-child(3) { width: 19%; } /* Mô tả */
+  .table-http th:nth-child(4),.table-http td:nth-child(4) { width: 43%; } /* RewriteRule */
+  .table-http th:nth-child(5),.table-http td:nth-child(5) { width: 15%; } /* Ví dụ */
+
+  pre, pre.sourceCode {
+      background-color: #c0c4c73b;
+  }
+
+  .sourceCode {
+      overflow: auto;
+  }
+
+  /* Pandoc highlight overrides */
+  pre.sourceCode {
+      background: #f7f7f7;
+      border: 1px solid #e0e0e0;
+      padding: 16px;
+      border-radius: 6px;
+  }
+  .sourceCode code {
+      font-family: 'Monaco', 'Consolas', monospace;
+      font-size: 13px;
+  }
+  .sourceCode .kw { color: #2a8ad4; font-weight: 700; }    /* keywords */
+  .sourceCode .cf { color: #2a8ad4; font-weight: 700; }    /* control flow */
+  .sourceCode .dt { color: #070707; }                      /* data types */
+  .sourceCode .fu { color: #8b5cf6; }                     /* functions */
+  .sourceCode .op { color: #2a8ad4; }                     /* operators */
+  .sourceCode .st { color: #0aa370; }                     /* strings */
+  .sourceCode .dv,                                     /* decimal values */
+  .sourceCode .bn { color: #c18401; }                     /* numbers */
+  .sourceCode .fl { color: #c18401; }                     /* floats */
+  .sourceCode .ch { color: #0aa370; }                     /* chars */
+  .sourceCode .co { color: #6a737d; font-style: italic; } /* comments */
+  .sourceCode .va { color: #444; }                        /* variables */
+  .sourceCode .cn { color: #c18401; font-weight: 700; }   /* constants */
+  .sourceCode .al { color: #d73a49; font-weight: 700; }   /* alerts */
+  .sourceCode .an { color: #d73a49; font-weight: 700; }   /* annotations */
+  .sourceCode .at { color: #005cc5; }                     /* attributes */
+  .sourceCode .im { color: #005cc5; }                     /* imports */
+
+  #TOC {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 20px 0;
+  }
+
+  #TOC > ul {
+    list-style: none;
+    padding-left: 0;
+  }
+
+  #TOC ul {
+    list-style: none;
+    padding-left: 20px;
+  }
+
+  #TOC li {
+    margin: 8px 0;
+  }
+
+  #TOC a {
+    text-decoration: none;
+    color: #0066cc;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+
+  #TOC a:hover {
+    color: #004499;
+    text-decoration: underline;
+  }
+
+  #TOC > ul > li > a {
+    font-size: 1.1em;
+    font-weight: 600;
+    color: #333;
+  }
+
+  #TOC ul ul a {
+    font-size: 0.95em;
+    color: #555;
+  }
+
+  hr {
+      background: #cacaca;
+  }
+
+  .w-50 {
+      width: 50%;
+  }
+
+  .w-100 {
+      width: 100%;
+  }
+
+  .max-w-100 {
+      max-width: 100% !important;
+  }
+
+  .shadow-xs {
+      box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+  }
+
+  a {
+      font-size: 14px;
+  }
+
+  code {
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: 'Monaco', 'Consolas', monospace;
+      background: #fff8e4;
+      color: #c99a0d;
+      font-size: 13px;
+  }
+
+  pre code {
+      background-color: transparent;
+  }
+
+  pre {
+      background-color: #000;
+      color: #f8f8f2;
+      padding: 20px;
+      border-radius: 6px;
+      border-left: 4px solid #3498db;
+      overflow-x: auto;
+  }
+
+  pre.sourceCode {
+      border-left: 4px solid #3498db;
+  }
+
+  pre code.language-php,
+  pre code.language-sql,
+  pre code.language-javascript,
+  pre code.language-bash,
+  pre code.language-shell {
+    background-color: #282c34 !important;
+    color: #abb2bf;
+  }
+
+  /* Syntax Highlighting */
+  code span.kw { color: #c678dd; font-weight: bold; } /* Keyword */
+  code span.dt { color: #e5c07b; } /* Datatype */
+  code span.dv { color: #d19a66; } /* Decimal Value */
+  code span.bn { color: #d19a66; } /* Base N */
+  code span.fl { color: #d19a66; } /* Float */
+  code span.ch { color: #98c379; } /* Char */
+  code span.st { color: #98c379; } /* String */
+  code span.co { color: #5c6370; font-style: italic; } /* Comment */
+  code span.ot { color: #e06c75; } /* Other */
+  code span.al { color: #e06c75; font-weight: bold; } /* Alert */
+  code span.fu { color: #61afef; } /* Function */
+  code span.er { color: #e06c75; font-weight: bold; } /* Error */
+  code span.wa { color: #e06c75; font-style: italic; } /* Warning */
+  code span.cn { color: #d19a66; } /* Constant */
+  code span.sc { color: #e5c07b; } /* Special Char */
+  code span.vs { color: #98c379; } /* Verbatim String */
+  code span.ss { color: #98c379; } /* Special String */
+  code span.im { color: #c678dd; } /* Import */
+  code span.va { color: #e06c75; } /* Variable */
+  code span.cf { color: #c678dd; } /* Control Flow */
+  code span.op { color: #56b6c2; } /* Operator */
+  code span.bu { color: #e5c07b; } /* BuiltIn */
+  code span.ex { color: #d19a66; } /* Extension */
+  code span.pp { color: #e5c07b; } /* Preprocessor */
+  code span.at { color: #d19a66; } /* Attribute */
+  code span.do { color: #5c6370; font-style: italic; } /* Documentation */
+  code span.an { color: #5c6370; font-style: italic; } /* Annotation */
+  code span.cv { color: #5c6370; font-style: italic; } /* Comment Var */
+  code span.in { color: #5c6370; font-style: italic; } /* Information */
+
+  ul, ol {
+      margin: 15px 0;
+      padding-left: 30px;
+  }
+
+  li {
+      margin-bottom: 8px;
+  }
+
+  blockquote {
+      background-color: #fff3cd;
+      border-left: 4px solid #ffc107;
+      padding: 15px 20px;
+      margin: 20px 0;
+      border-radius: 4px;
+      color: #856404;
+  }
+
+  pre code.language-json {
+    background-color: #0d1117 !important;
+    color: #58a6ff !important;
+    display: block;
+    font-size: 14px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    margin: -15px;
+  }
+
+  .table-http code {
+      font-size: 12px;
+  }
+
+  .table-http th:nth-child(1),.table-http td:nth-child(1) { width: 8%; }  /* HTTP Method */
+  .table-http th:nth-child(2),.table-http td:nth-child(2) { width: 15%; } /* URL */
+  .table-http th:nth-child(3),.table-http td:nth-child(3) { width: 19%; } /* Mô tả */
+  .table-http th:nth-child(4),.table-http td:nth-child(4) { width: 43%; } /* RewriteRule */
+  .table-http th:nth-child(5),.table-http td:nth-child(5) { width: 15%; } /* Ví dụ */
+
+  pre, pre.sourceCode {
+      background-color: #c0c4c73b;
+  }
+
+  .sourceCode {
+      overflow: auto;
+  }
+
+  /* Pandoc highlight overrides */
+  pre.sourceCode {
+      background: #f7f7f7;
+      border: 1px solid #e0e0e0;
+      padding: 16px;
+      border-radius: 6px;
+      border-left: 4px solid #3498db;
+  }
+  .sourceCode code {
+      font-family: 'Monaco', 'Consolas', monospace;
+      font-size: 13px;
+  }
+  .sourceCode .kw { color: #2a8ad4; font-weight: 700; }    /* keywords */
+  .sourceCode .cf { color: #2a8ad4; font-weight: 700; }    /* control flow */
+  .sourceCode .dt { color: #070707; }                      /* data types */
+  .sourceCode .fu { color: #8b5cf6; }                     /* functions */
+  .sourceCode .op { color: #2a8ad4; }                     /* operators */
+  .sourceCode .st { color: #0aa370; }                     /* strings */
+  .sourceCode .dv,                                     /* decimal values */
+  .sourceCode .bn { color: #c18401; }                     /* numbers */
+  .sourceCode .fl { color: #c18401; }                     /* floats */
+  .sourceCode .ch { color: #0aa370; }                     /* chars */
+  .sourceCode .co { color: #6a737d; font-style: italic; } /* comments */
+  .sourceCode .va { color: #444; }                        /* variables */
+  .sourceCode .cn { color: #c18401; font-weight: 700; }   /* constants */
+  .sourceCode .al { color: #d73a49; font-weight: 700; }   /* alerts */
+  .sourceCode .an { color: #d73a49; font-weight: 700; }   /* annotations */
+  .sourceCode .at { color: #005cc5; }                     /* attributes */
+  .sourceCode .im { color: #005cc5; }                     /* imports */
+
+  #TOC {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 20px 0;
+  }
+
+  #TOC > ul {
+    list-style: none;
+    padding-left: 0;
+  }
+
+  #TOC ul {
+    list-style: none;
+    padding-left: 20px;
+  }
+
+  #TOC li {
+    margin: 8px 0;
+  }
+
+  #TOC a {
+    text-decoration: none;
+    color: #0066cc;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+
+  #TOC a:hover {
+    color: #004499;
+    text-decoration: underline;
+  }
+
+  #TOC > ul > li > a {
+    font-size: 1.1em;
+    font-weight: 600;
+    color: #333;
+  }
+
+  #TOC ul ul a {
+    font-size: 0.95em;
+    color: #555;
+  }
+
+  hr {
+      background: #cacaca;
+  }
+
+  .w-50 {
+      width: 50%;
+  }
+
+  .w-100 {
+      width: 100%;
+  }
+
+  .max-w-100 {
+      max-width: 100% !important;
+  }
+
+  .shadow-xs {
+      box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+  }
+
+  </style>
+</head>
+<body>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#uml-作业---atm-系统" id="toc-uml-作业---atm-系统">UML 作业
+- ATM 系统</a>
+<ul>
+<li><a href="#一项目愿景vision"
+id="toc-一项目愿景vision">一、项目愿景（Vision）</a></li>
+<li><a href="#二用例模型use-case-model"
+id="toc-二用例模型use-case-model">二、用例模型（Use-Case
+Model）</a></li>
+<li><a href="#三领域模型domain-model"
+id="toc-三领域模型domain-model">三、领域模型（Domain Model）</a></li>
+<li><a href="#四补充规约supplementary-specification"
+id="toc-四补充规约supplementary-specification">四、补充规约（Supplementary
+Specification）</a></li>
+<li><a href="#五术语表glossary"
+id="toc-五术语表glossary">五、术语表（Glossary）</a></li>
+<li><a href="#六迭代计划iteration-plan"
+id="toc-六迭代计划iteration-plan">六、迭代计划（Iteration
+Plan）</a></li>
+<li><a href="#七细化迭代一"
+id="toc-七细化迭代一">七、细化迭代一</a></li>
+</ul></li>
+</ul>
+</nav>
+<h1 id="uml-作业---atm-系统">UML 作业 - ATM 系统</h1>
+<h3 id="一项目愿景vision">一、项目愿景（Vision）</h3>
+<h4 id="项目背景">1.1. 项目背景</h4>
+<p>随着银行业务的不断发展，传统人工柜台办理业务效率较低，无法满足大量客户需求。ATM
+自动取款机系统通过自助服务方式，使用户能够独立完成基本银行业务，从而提高效率并降低运营成本。</p>
+<h4 id="项目目标">1.2. 项目目标</h4>
+<p>本系统旨在实现一个 ATM
+自助服务系统，提供基本银行业务功能，包括取款、存款、查询余额、转账等，提高用户体验与业务处理效率。</p>
+<h4 id="用户描述">1.3. 用户描述</h4>
+<ul>
+<li><strong>银行客户</strong>：使用 ATM 完成各类操作</li>
+<li><strong>银行系统</strong>：提供账户验证与数据支持</li>
+</ul>
+<h4 id="系统功能概述">1.4. 系统功能概述</h4>
+<p>系统应支持以下功能： - 取款 - 存款 - 查询余额 - 转账 - 修改密码 -
+打印凭条 - 退卡</p>
+<h4 id="系统范围">1.5. 系统范围</h4>
+<p>本系统主要实现 ATM
+的用户交互及显示模块，不涉及银行后台系统的具体实现。</p>
+<hr />
+<h3 id="二用例模型use-case-model">二、用例模型（Use-Case Model）</h3>
+<h4 id="参与者">2.1. 参与者</h4>
+<ul>
+<li>客户</li>
+<li>银行系统</li>
+</ul>
+<h4 id="用例列表">2.2. 用例列表</h4>
+<ul>
+<li>取款</li>
+<li>存款</li>
+<li>查询余额</li>
+<li>转账</li>
+<li>修改密码</li>
+<li>打印凭条</li>
+<li>退卡</li>
+</ul>
+<h4 id="用例图">2.3. 用例图</h4>
+<figure>
+<img src="Drawing%202026-03-31%2009.30.11.excalidraw.png"
+alt="用例图" />
+<figcaption aria-hidden="true">用例图</figcaption>
+</figure>
+<h4 id="用例说明">2.4. 用例说明</h4>
+<table>
+<colgroup>
+<col style="width: 1%" />
+<col style="width: 98%" />
+</colgroup>
+<tbody>
+<tr>
+<td style="text-align: left;">用例名称</td>
+<td>取款</td>
+</tr>
+<tr>
+<td style="text-align: left;">用例编号</td>
+<td>UC001</td>
+</tr>
+<tr>
+<td style="text-align: left;">用例简述</td>
+<td>客户通过 ATM 机提取账户中的现金</td>
+</tr>
+<tr>
+<td style="text-align: left;">用例图</td>
+<td><img src="image.png" alt="alt text" /></td>
+</tr>
+<tr>
+<td style="text-align: left;">主要流程</td>
+<td></td>
+</tr>
+<tr>
+<td style="text-align: left;">替代流程</td>
+<td></td>
+</tr>
+<tr>
+<td style="text-align: left;">业务规则</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="三领域模型domain-model">三、领域模型（Domain Model）</h3>
+<h4 id="领域模型图">3.1 领域模型图</h4>
+<figure>
+<img src="domain_model.png" alt="领域模型图" />
+<figcaption aria-hidden="true">领域模型图</figcaption>
+</figure>
+<h4 id="领域对象说明">3.2 领域对象说明</h4>
+<ul>
+<li>ATM：取款流程控制器，协调界面交互、银行系统与设备</li>
+<li>BankSystem：银行业务接口，定义认证、锁卡、取款能力</li>
+<li>InMemoryBankSystem：业务规则实现，负责金额校验、手续费计算与扣款</li>
+<li>BankAccount：账户实体，维护卡号、余额、锁卡状态与 PIN 校验</li>
+<li>WithdrawalResult：交易结果对象，封装成功状态、金额、手续费、余额</li>
+<li>EncryptedAccountDatabase：加密账户数据访问，负责查询与持久化</li>
+</ul>
+<hr />
+<h3
+id="四补充规约supplementary-specification">四、补充规约（Supplementary
+Specification）</h3>
+<h4 id="性能要求">4.1. 性能要求</h4>
+<ul>
+<li>系统响应时间不超过2秒</li>
+<li>交易处理应实时完成</li>
+</ul>
+<h4 id="安全性">4.2. 安全性</h4>
+<ul>
+<li>密码必须加密传输</li>
+<li>连续输错3次锁卡</li>
+<li>所有交易需身份验证</li>
+</ul>
+<h4 id="可用性">4.3. 可用性</h4>
+<ul>
+<li>操作界面简洁易懂</li>
+<li>提供明确提示信息</li>
+<li>支持连续操作</li>
+</ul>
+<h4 id="可靠性">4.4. 可靠性</h4>
+<ul>
+<li>系统应保证交易一致性</li>
+<li>出现异常时自动回滚</li>
+</ul>
+<h4 id="约束">4.5. 约束</h4>
+<ul>
+<li>必须依赖银行后台系统</li>
+<li>必须使用银行卡操作</li>
+</ul>
+<hr />
+<h3 id="五术语表glossary">五、术语表（Glossary）</h3>
+<table>
+<thead>
+<tr>
+<th>术语</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ATM</td>
+<td>自动取款机</td>
+</tr>
+<tr>
+<td>用户</td>
+<td>使用ATM的人</td>
+</tr>
+<tr>
+<td>账户</td>
+<td>银行账户</td>
+</tr>
+<tr>
+<td>交易</td>
+<td>一次完整操作</td>
+</tr>
+<tr>
+<td>凭条</td>
+<td>交易打印记录</td>
+</tr>
+<tr>
+<td>密码</td>
+<td>用户身份验证信息</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="六迭代计划iteration-plan">六、迭代计划（Iteration Plan）</h3>
+<h4 id="初始阶段inception">6.1. 初始阶段（Inception）</h4>
+<ul>
+<li>完成 Vision 文档</li>
+<li>确定主要用例</li>
+</ul>
+<h4 id="细化迭代1iteration-1">6.2. 细化迭代1（Iteration 1）</h4>
+<ul>
+<li>完成取款功能分析与实现（认证、金额校验、扣款、吐钞、凭条）</li>
+<li>绘制取款 SSD（System Sequence Diagram）</li>
+<li>编写详细用例与替代流程（密码错误、余额不足、金额非法）</li>
+</ul>
+<figure>
+<img src="SSD.png" alt="取款SSD图" />
+<figcaption aria-hidden="true">取款SSD图</figcaption>
+</figure>
+<h4 id="细化迭代2iteration-2">6.3. 细化迭代2（Iteration 2）</h4>
+<ul>
+<li>完成查询余额、修改密码</li>
+<li>完善用例模型</li>
+</ul>
+<h4 id="细化迭代3iteration-3">6.4. 细化迭代3（Iteration 3）</h4>
+<ul>
+<li>完成转账、存款功能</li>
+<li>完善系统模型</li>
+</ul>
+<h4 id="时间安排">6.5. 时间安排</h4>
+<table>
+<thead>
+<tr>
+<th>阶段</th>
+<th>内容</th>
+<th>时间</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>初始</td>
+<td>Vision</td>
+<td>第5周</td>
+</tr>
+<tr>
+<td>迭代1</td>
+<td>取款</td>
+<td>第9周</td>
+</tr>
+<tr>
+<td>迭代2</td>
+<td>查询/修改密码</td>
+<td>第10周</td>
+</tr>
+<tr>
+<td>迭代3</td>
+<td>完善系统</td>
+<td>第14周</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="七细化迭代一">七、细化迭代一</h3>
+<h4 id="迭代目标">7.1 迭代目标</h4>
+<p>本次细化迭代聚焦“取款”主用例，完成从终端交互到银行业务校验再到账户持久化更新的端到端流程。</p>
+<h4 id="已实现范围">7.2 已实现范围</h4>
+<ul>
+<li>身份认证：支持卡号存在性检查、锁卡检查、PIN 校验（最多 3 次）</li>
+<li>取款交易：支持金额格式校验、业务规则校验、手续费计算与扣款</li>
+<li>设备交互：支持吐钞、凭条打印选择、交易结束提示</li>
+<li>数据存储：账户数据以加密文件方式持久化保存</li>
+</ul>
+<h4 id="关键实现与职责分配">7.3 关键实现与职责分配</h4>
+<ul>
+<li><code>device.ATM</code>：交易流程控制器，串联认证、菜单选择、取款与设备动作</li>
+<li><code>device.Display</code>：负责控制台输入输出与用户提示</li>
+<li><code>system.BankSystem</code>：银行业务能力接口（认证、锁卡、取款）</li>
+<li><code>system.InMemoryBankSystem</code>：取款规则与扣款实现</li>
+<li><code>system.EncryptedAccountDatabase</code>：加密账户库读写（<code>data/accounts.encdb</code>）</li>
+<li><code>model.BankAccount</code>：账户实体（余额、锁卡状态、PIN
+验证）</li>
+<li><code>model.WithdrawalResult</code>：交易结果对象（成功/失败、金额、手续费、余额）</li>
+</ul>
+<h4 id="业务规则与代码一致">7.4 业务规则（与代码一致）</h4>
+<ul>
+<li>单次取款金额必须大于 0</li>
+<li>取款金额必须为 50 的倍数</li>
+<li>单次取款上限为 5000 元</li>
+<li>手续费按 1% 计算（<code>fee = amount * 0.01</code>）</li>
+<li>可用余额校验基于 <code>amount + fee</code></li>
+<li>密码连续输错 3 次后锁卡并结束交易</li>
+</ul>
+<h4 id="主成功场景摘要">7.5 主成功场景（摘要）</h4>
+<ol type="1">
+<li>客户输入卡号，系统校验卡号存在且未锁定</li>
+<li>客户输入 PIN，系统认证通过</li>
+<li>客户选择“1.取款”并输入金额</li>
+<li>系统完成金额规则校验与余额校验</li>
+<li>系统扣款并更新账户存储</li>
+<li>设备吐钞，用户可选择是否打印凭条</li>
+<li>系统提示取卡，交易结束</li>
+</ol>
+<h4 id="替代异常流程">7.6 替代/异常流程</h4>
+<ul>
+<li>卡号不存在：提示重新输入卡号</li>
+<li>卡已锁定：终止交易并提示联系柜台</li>
+<li>PIN 错误且未达上限：提示剩余次数并重试</li>
+<li>PIN 连续错误 3 次：锁卡并吞卡</li>
+<li>金额格式非法：交易结束</li>
+<li>金额不满足规则或余额不足：返回失败原因并退卡</li>
+</ul>
+<h4 id="安全与持久化说明">7.7 安全与持久化说明</h4>
+<ul>
+<li>PIN 不以明文保存，账户使用盐值 + 哈希校验</li>
+<li>账户数据库采用 AES-GCM 加密存储</li>
+<li>主密钥优先读取环境变量
+<code>ATM_DB_KEY</code>（未设置时使用演示密钥）</li>
+</ul>
+<h4 id="本迭代未覆盖项">7.8 本迭代未覆盖项</h4>
+<p>当前代码仅完整实现“取款”链路，以下需求尚未进入本次实现： - 存款 -
+查询余额 - 转账 - 修改密码</p>
+</body>
+</html>
